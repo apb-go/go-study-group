@@ -32,4 +32,21 @@ func (m *Mouth) Breathe() {
 // 課題4
 // 上の3つのstructの機能を持つFaceを実行してください。
 // ただし口と鼻両方で呼吸します。
-type Face struct{}
+type Face struct {
+	Eye
+	Nose
+	Mouth
+}
+
+func (f *Face) Breathe() {
+	f.Nose.Breathe()
+	f.Mouth.Breathe()
+}
+
+func (f *Face) Eat() {
+	f.Mouth.Eat()
+}
+
+func (f *Face) Watch() {
+	f.Eye.Watch()
+}
