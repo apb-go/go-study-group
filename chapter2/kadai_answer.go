@@ -7,65 +7,62 @@ import "fmt"
 // 2以下の場合、要素を掛け算
 // 3以上の場合、要素を足し算
 // を返却。正常終了時、errorはnilでよい
-func Calc(slice []int) (int, error) {
+func CalcAns(slice []int) (int, error) {
 	// TODO Q1
 	// ヒント：エラーにも色々な生成方法があるが、ここではシンプルにfmtパッケージの
 	// fmt.Errorf(“invalid op=%s”, op) などでエラー内容を返却するのがよい
 	// https://golang.org/pkg/fmt/#Errorf
-
-	length := len(slice)
-
-	if length == 0 {
-		return 0, fmt.Errorf("invalid len=%d", length)
-	} else if length < 2 {
+	switch len(slice) {
+	case 0:
+		return 0, fmt.Errorf("slice length is zero")
+	case 1:
 		return slice[0], nil
-	} else if length < 3 {
+	case 2:
 		return slice[0] * slice[1], nil
+	default:
+		var ret int
+		for _, v := range slice {
+			ret += v
+		}
+		return ret, nil
 	}
-	r := 0
-	for _, num := range slice {
-		r = r + num
-	}
-
-	return r, nil
-}
-
-type Number struct {
-	index int
 }
 
 // 構造体Numberを3つの要素数から成るスライスにして返却
 // 3つの要素の中身は[{1} {2} {3}]とし、append関数を使用すること
-func Numbers() []Number {
+func NumbersAns() []Number {
 	// TODO Q2
-	var slice []Number
-	for i := 0; i < 3; i++ {
-		slice = append(slice, Number{i + 1})
+	result := make([]Number, 0, 3)
+
+	for i := 1; i <= 3; i++ {
+		result = append(result, Number{index: i})
 	}
-	return slice
+
+	return result
 }
 
 // 引数mをforで回し、「値」部分だけの和を返却
 // キーに「yon」が含まれる場合は、キー「yon」に関連する値は除外すること
 // キー「yon」に関しては完全一致すること
-func CalcMap(m map[string]int) int {
+func CalcMapAns(m map[string]int) int {
 	// TODO Q3
-	n := 0
-	for k, v := range m {
-		if k == "yon" {
-			continue
-		}
-		n += v
-	}
-	return n
-}
+	var result int
 
-type Model struct {
-	Value int
+	_, ok := m["yon"]
+	if ok {
+		delete(m, "yon")
+	}
+
+	for _, v := range m {
+		result += v
+	}
+
+	return result
 }
 
 // 与えられたスライスのModel全てのValueに5を足す破壊的な関数を作成
-func Add(models []Model) {
+func AddAns(models []Model) {
+	// TODO  Q4
 	for i := range models {
 		models[i].Value += 5
 	}
@@ -74,27 +71,32 @@ func Add(models []Model) {
 // 引数のスライスには重複な値が格納されているのでユニークな値のスライスに加工して返却
 // 順序はスライスに格納されている順番のまま返却すること
 // ex) 引数:[]slice{21,21,4,5} 戻り値:[]int{21,4,5}
-func Unique(slice []int) []int {
+func UniqueAns(slice []int) []int {
 	// TODO Q5
-	m := make(map[int]bool)
-	var u []int
+
+	result := make([]int, 0)
+	uniqueMap := make(map[int]struct{})
 	for _, v := range slice {
-		if !m[v] {
-			m[v] = true
-			u = append(u, v)
+		_, ok := uniqueMap[v]
+		if ok {
+			// uniqueMapに含まれている
+			continue
 		}
+		result = append(result, v)
+		uniqueMap[v] = struct{}{}
 	}
-	return u
+	return result
 }
 
 // 連続するフィボナッチ数(0, 1, 1, 2, 3, 5, ...)を返す関数(クロージャ)を返却
-func Fibonacci() func() int {
+func FibonacciAns() func() int {
 	// TODO Q6 オプション
-	i, j := 0, 1
+
+	a := 0
+	b := 1
+
 	return func() int {
-		k := i
-		i = j
-		j = k + j
-		return k
+		a, b = b, a+b
+		return b - a
 	}
 }
